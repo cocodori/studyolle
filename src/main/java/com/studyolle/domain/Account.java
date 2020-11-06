@@ -5,6 +5,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -56,5 +57,13 @@ public class Account {
     //스터디의 갱신된 정보 알림을 어떻게 받을 것인가
     private boolean studyUpdatedByEmail;
     private boolean studyUpdatedByWeb;
+
+    /*
+    *   토큰 값은 랜덤하게 UUID를 이용해서 생성한다.
+    * */
+    public void generateEmailCheckToken() {
+        this.emailCheckToken = UUID.randomUUID().toString();
+
+    }
 }
 

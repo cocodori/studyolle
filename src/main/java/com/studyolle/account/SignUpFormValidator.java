@@ -19,8 +19,8 @@ public class SignUpFormValidator implements Validator {
     }
 
     @Override
-    public void validate(Object o, Errors errors) {
-        SignupForm signupForm = (SignupForm)errors;
+    public void validate(Object object, Errors errors) {
+        SignupForm signupForm = (SignupForm)object;
         if (accountRepository.existsByEmail(signupForm.getEmail())) {
             errors.rejectValue("email", "invalid.email", new Object[]{signupForm.getEmail()}, "이미 사용 중인 이메일입니다.");
         }

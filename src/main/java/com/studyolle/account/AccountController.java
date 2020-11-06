@@ -1,6 +1,9 @@
 package com.studyolle.account;
 
+import com.studyolle.domain.Account;
 import lombok.RequiredArgsConstructor;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -16,6 +19,7 @@ import javax.validation.Valid;
 public class AccountController {
 
     private final SignUpFormValidator signUpFormValidator;
+    private final AccountService accountService;
 
     @InitBinder("signupForm")
     public void initBinder(WebDataBinder webDataBinder) {
@@ -33,8 +37,10 @@ public class AccountController {
         if (errors.hasErrors()) {
             return "account/sign-up";
         }
-
-        //TODO 회원가입 처리
+        //회원 등록 서비스 호출
+        accountService.processNewAccount(signupForm);
         return "redirect:/";
     }
+
+
 }
