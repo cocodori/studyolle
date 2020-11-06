@@ -25,6 +25,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated();
     }
 
+    /*
+    *   로케이션에 있는 스태틱한 리소스는 시큐리티를 적용하지 않는다.
+    * */
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring()
