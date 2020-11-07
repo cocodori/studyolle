@@ -4,9 +4,14 @@ import com.studyolle.domain.Account;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -24,13 +29,14 @@ public class AccountService {
     *   token값을 원하는 대로 DB에 저장할 수 있다.
     */
     @Transactional
-    public void processNewAccount(SignupForm signupForm) {
+    public Account processNewAccount(SignupForm signupForm) {
         //회원 등록
         Account newAccount = saveNewAccount(signupForm);
         //메일로 보낼 토큰을 생성하는 메서드
         newAccount.generateEmailCheckToken();
         //이메일로 토큰 보내고 확인
         sendSignUpConfirmEmail(newAccount);
+        return newAccount;
     }
 
     private Account saveNewAccount(SignupForm signupForm) {
@@ -56,5 +62,13 @@ public class AccountService {
                 + "&email=" + newAccount.getEmail() );  //본문
         //메일 전송
         javaMailSender.send(mailMessage);
+    }
+
+    public void login(Account account) {
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
+                account.getNickname(),
+                account.getPassword(),
+                List.of(new SimpleGrantedAuthority("ROLE_USER")));
+        SecurityContextHolder.getContext().setAuthentication(token);
     }
 }
