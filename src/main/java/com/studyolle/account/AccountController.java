@@ -13,13 +13,14 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 
 @RequiredArgsConstructor
 @Controller
 public class AccountController {
-
     private final SignUpFormValidator signUpFormValidator;
     private final AccountService accountService;
+    private final AccountRepository accountRepository;
 
     @InitBinder("signupForm")
     public void initBinder(WebDataBinder webDataBinder) {
@@ -40,6 +41,31 @@ public class AccountController {
         //회원 등록 서비스 호출
         accountService.processNewAccount(signupForm);
         return "redirect:/";
+    }
+
+    @GetMapping("/check-email-token")
+    public String checkEmailToken(String token, String email, Model model) {
+        Account account = accountRepository.findByEmail(email);
+        String view = "account/checked-Email";
+
+        if (account == null) {
+            model.addAttribute("error", "wrong.email");
+            return view;
+        }
+
+        if (!account.getEmailCheckToken().equals(token)) {
+            model.addAttribute("error", "wrong.token");
+            return view;
+        }
+
+        //이메일 인증된 사용자
+        account.setEmailVerified(true);
+        //가입일 초기화
+        account.setJoinedAt(LocalDateTime.now());
+        model.addAttribute("numberOfUser", accountRepository.count());
+        model.addAttribute("nickname", account.getNickname());
+
+        return view;
     }
 
 
