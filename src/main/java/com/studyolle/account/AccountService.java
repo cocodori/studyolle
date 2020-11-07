@@ -15,6 +15,14 @@ public class AccountService {
     private final JavaMailSender javaMailSender;
     private final PasswordEncoder passwordEncoder;
 
+    /**
+    *  지금 이 객체는 디태치드 객체여서 DB에 싱크가 되지 않았다. 그러니 DB에 저장이 되지 않고 Token값이 Null인 것이다.
+    *  saveNewAccount에서 return한 객체는, save()안에서는 트랜잭션이어서 해당 엔티티가 퍼시스턴트 상태다.
+    *   하지만 Return된 다음에는 디태치먼트 상태다. 트랜잭션 범위를 벗어났기 때문이다.
+    *   트랜잭션 안에 있을 때에만 퍼시스턴트 상태가 되어 DB에 싱크할 수 있다.
+    *   따라서 @Transactional 애노테이션을 붙여서 디태치드 상태가 아닌 퍼시스턴트 상태를 유지할 수 있도록 해야만
+    *   token값을 원하는 대로 DB에 저장할 수 있다.
+    */
     @Transactional
     public void processNewAccount(SignupForm signupForm) {
         //회원 등록
@@ -26,7 +34,6 @@ public class AccountService {
     }
 
     private Account saveNewAccount(SignupForm signupForm) {
-        //TODO 회원가입 처리
         //입력 받은 값으로 회원 도메인 초기화
         Account newAccount = Account.builder()
                 .email(signupForm.getEmail())

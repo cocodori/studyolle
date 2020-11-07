@@ -46,7 +46,7 @@ public class AccountController {
     @GetMapping("/check-email-token")
     public String checkEmailToken(String token, String email, Model model) {
         Account account = accountRepository.findByEmail(email);
-        String view = "account/checked-Email";
+        String view = "account/checked-email";
 
         if (account == null) {
             model.addAttribute("error", "wrong.email");
@@ -58,10 +58,7 @@ public class AccountController {
             return view;
         }
 
-        //이메일 인증된 사용자
-        account.setEmailVerified(true);
-        //가입일 초기화
-        account.setJoinedAt(LocalDateTime.now());
+        account.completeSignUp();
         model.addAttribute("numberOfUser", accountRepository.count());
         model.addAttribute("nickname", account.getNickname());
 
