@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://thymeleaf.org">
-<head th:replace="fragments.html :: header"></head>
+<head th:replace="fragments.html :: head"></head>
 <body class="bg-lignt">
     <div th:replace="fragments.html :: main-nav"></div>
 
@@ -13,7 +13,7 @@
               th:action="@{/sign-up}" th:object="${signupForm}" method="post" novalidate>
             <div class="form-group">
                 <label for="nickname">닉네임</label>
-                <input id="nickname" th:field="*{nickname}" class="form-control"
+                <input id="nickname" th:field="*{nickname}" class="form-control" value="soyo"
                        placeholder="닉네임을 입력하세요." aria-desccribedby="nicknameHelp" required
                        minlength="3" maxlength="20">
                 <small id="nicknameHelp" class="form-text text-muted">
@@ -26,7 +26,7 @@
 
             <div class="form-group">
                 <label for="email">이메일</label>
-                <input id="email" type="email" th:field="*{email}" class="form-control"
+                <input id="email" type="email" th:field="*{email}" class="form-control" value="sadf@sdfa.com"
                 placeholder="your@email.com" aria-describedby="emailHelp" required>
                 <small id="emailHelp" class="form-text text-muted">
                     스터디올래는 사용자의 이메일을 공개하지 않습니다.
@@ -37,7 +37,7 @@
             </div>
             <div class="form-group">
                 <label for="password">비밀번호</label>
-                <input id="password" th:field="*{password}" class="form-control"
+                <input id="password" th:field="*{password}" class="form-control" value="123456788"
                        aria-describedby="passwordHelp" type="password" required
                        minlength="8" maxlength="50">
                 <small id="passwordHelp" class="form-text text-muted">
@@ -58,9 +58,6 @@
         </div>
         <footer th:replace="fragments.html :: footer"></footer>
     </div><!-- container-->
-
-    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
-    <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
     (function () {
