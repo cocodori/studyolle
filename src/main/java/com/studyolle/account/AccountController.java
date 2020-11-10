@@ -8,10 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
@@ -34,8 +31,9 @@ public class AccountController {
         return "/account/sign-up";
     }
 
+
     @PostMapping("/sign-up")
-    public String signUpSubmit(@Valid SignupForm signupForm, Errors errors) {
+    public String signUpSubmit(@Valid @ModelAttribute SignupForm signupForm, Errors errors) {
         if (errors.hasErrors()) {
             return "account/sign-up";
         }
