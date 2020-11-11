@@ -4,6 +4,7 @@ import com.studyolle.account.AccountService;
 import com.studyolle.account.CurrentUser;
 import com.studyolle.domain.Account;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -14,6 +15,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 
+@Slf4j
 @RequiredArgsConstructor
 @Controller
 public class SettingsController {
@@ -45,6 +47,7 @@ public class SettingsController {
 
         redirect.addFlashAttribute("message", "프로필을 수정했습니다.");
 
+        log.info("profileImage : " + profile.getProfileImage());
         accountService.updateProfile(account, profile);
         return "redirect:"+SETTINGS_PROFILE_VIEW_URL;
     }
