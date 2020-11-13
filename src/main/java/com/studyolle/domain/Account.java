@@ -3,16 +3,12 @@ package com.studyolle.domain;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @EqualsAndHashCode(of="id")
-@Setter
-@Getter
+@Getter @Setter @Builder
+@AllArgsConstructor @NoArgsConstructor
 @Entity
 public class Account {
     @Id
@@ -41,28 +37,31 @@ public class Account {
     //사는 곳
     private String location;
     /*
-    *   @Lob을 선언하면 varchar가 아닌 text타입으로 생성된다.
-    *   @Basic(fetch = fetchType.EAGER)
-    * */
+     *   @Lob을 선언하면 varchar가 아닌 text타입으로 생성된다.
+     *   @Basic(fetch = fetchType.EAGER)
+     * */
     @Lob
     @Basic(fetch = FetchType.EAGER)
     private String profileImage;
 
     //스터디가 새로 만들어졌다는 알림을 어떻게 받을 것인가.(email or web)
     private boolean studyCreatedByEmail;
-    private boolean studyCreatedByWeb;
+    private boolean studyCreatedByWeb = true;
+
     //스터디 가입 신청 결과를 어떻게 받을 것인가(email or web)
     private boolean studyEnrollmentResultByEmail;
-    private boolean studyEnrollmentResultByWeb;
+    private boolean studyEnrollmentResultByWeb = true;
+
     //스터디의 갱신된 정보 알림을 어떻게 받을 것인가
     private boolean studyUpdatedByEmail;
-    private boolean studyUpdatedByWeb;
+    private boolean studyUpdatedByWeb = true;
+
     //이메일을 전송한 시간 체크
     private LocalDateTime emailCheckTokenGeneratedAt;
 
     /*
-    *   토큰 값은 랜덤하게 UUID를 이용해서 생성한다.
-    * */
+     *   토큰 값은 랜덤하게 UUID를 이용해서 생성한다.
+     * */
     public void generateEmailCheckToken() {
         this.emailCheckToken = UUID.randomUUID().toString();
         this.emailCheckTokenGeneratedAt = LocalDateTime.now();
@@ -79,10 +78,9 @@ public class Account {
     }
 
     /*
-    *   이메일은 한 시간에 한 번만 인증할 수 있다.
-    * */
+     *   이메일은 한 시간에 한 번만 인증할 수 있다.
+     * */
     public boolean canSendConfirmMail() {
         return this.emailCheckTokenGeneratedAt.isBefore(LocalDateTime.now().minusHours(1));
     }
 }
-

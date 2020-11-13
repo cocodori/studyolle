@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -113,7 +114,7 @@ class SettingsControllerTest {
     @DisplayName("비밀번호 수정 - 입력값 에러 - 비밀번호 불일치")
     @WithAccount("soyo")
     @Test
-    void uupdatePassword_fail() throws Exception {
+    void updatePassword_fail() throws Exception {
         mockMvc.perform(post(SettingsController.SETTINGS_PASSWORD_VIEW_URL)
         .param("newPassword", "12345678")
         .param("newPasswordConfirm", "12345677")
@@ -126,5 +127,56 @@ class SettingsControllerTest {
     }
 
 
+    @DisplayName("알림 받기 설정 - GET - 폼")
+    @WithAccount("soyo")
+    @Test
+    void test_notifications_form() throws Exception {
+        mockMvc.perform(get(SettingsController.SETTINGS_NOTIFICATIONS_VIEW_URL))
+                .andExpect(status().isOk())
+                .andExpect(view().name(SettingsController.SETTINGS_NOTIFICATIONS_VIEW_NAME))
+                .andExpect(model().attributeExists("account"))
+                .andExpect(model().attributeExists("notifications"));
+    }
 
+    @DisplayName("알림 받기 설정 - POST - 입력값 정상")
+    @WithAccount("soyo")
+    @Test
+    void test_notifications_update_success () throws Exception {
+        mockMvc.perform(post(SettingsController.SETTINGS_NOTIFICATIONS_VIEW_URL)
+                .param("studyCreatedByEmail", "true")
+                .param("studyCreatedByWeb", "true")
+                .param("studyEnrollmentResultByEmail", "true")
+                .param("studyEnrollmentResultByWeb", "true")
+                .param("studyUpdatedByEmail", "true")
+                .param("studyUpdatedByWeb", "true")
+                .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl(SettingsController.SETTINGS_NOTIFICATIONS_VIEW_URL))
+                .andExpect(flash().attributeExists("message"));
+
+        Account soyo = accountRepository.findByNickname("soyo");
+
+        assertTrue(soyo.isStudyCreatedByWeb());
+        assertTrue(soyo.isStudyCreatedByEmail());
+        assertTrue(soyo.isStudyEnrollmentResultByEmail());
+        assertTrue(soyo.isStudyEnrollmentResultByWeb());
+        assertTrue(soyo.isStudyUpdatedByEmail());
+        assertTrue(soyo.isStudyUpdatedByWeb());
+    }
+
+    @DisplayName("알림 받기 설정 - POST - 입력값 오류")
+    @WithAccount("soyo")
+    @Test
+    void test_notifications_update_fail () throws Exception {
+        //boolean이 아니라 다른 타입이 들어오는 경우
+        mockMvc.perform(post(SettingsController.SETTINGS_NOTIFICATIONS_VIEW_URL)
+                .param("studyCreatedByEmail", "asdsadasdf")
+                .param("studyCreatedByWeb", "21312")
+                .param("studyEnrollmentResultByEmail", "asdsadasdf")
+                .param("studyEnrollmentResultByWeb", "asdsadasdf")
+                .param("studyUpdatedByEmail", "asdsadasdf")
+                .param("studyUpdatedByWeb", "asdsadasdf")
+                .with(csrf()))
+                .andExpect(status().is4xxClientError());
+    }
 }
