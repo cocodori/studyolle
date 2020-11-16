@@ -1,5 +1,6 @@
 package com.studyolle.account;
 
+import com.studyolle.WithAccount;
 import com.studyolle.domain.Account;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -115,4 +116,30 @@ public class AccountControllerTest {
                 .andExpect(view().name("account/checked-email"))
                 .andExpect(authenticated().withUsername("kafka"));
     }
+
+    @DisplayName("비밀번호 없이 로그인 - GET")
+    @WithAccount("soyo")
+    @Test
+    void test_email_login_form() throws Exception {
+        String viewName = "/email-login";
+        mockMvc.perform(get(viewName))
+                .andExpect(status().isOk())
+                .andExpect(view().name("account"+viewName))
+                .andExpect(authenticated());
+    }
+
+    @DisplayName("비밀번호 없이 로그인 - POST")
+    @WithAccount("soyo")
+    @Test
+    void test_email_login_success() throws Exception {
+        Account soyo = accountRepository.findByNickname("soyo");
+
+        mockMvc.perform(post("/email-login")
+                .param("email", soyo.getEmail())
+                .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/email-login"))
+                .andExpect(flash().attributeExists("message"));
+    }
+
 }
