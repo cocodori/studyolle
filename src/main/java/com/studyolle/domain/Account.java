@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Set;
 import java.util.UUID;
 
 @EqualsAndHashCode(of="id")
@@ -58,6 +59,9 @@ public class Account {
 
     //이메일을 전송한 시간 체크
     private LocalDateTime emailCheckTokenGeneratedAt;
+
+    @ManyToMany
+    private Set<Tag> tags;
 
     /*
      *   토큰 값은 랜덤하게 UUID를 이용해서 생성한다.
