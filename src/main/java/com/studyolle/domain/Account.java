@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -61,7 +62,7 @@ public class Account {
     private LocalDateTime emailCheckTokenGeneratedAt;
 
     @ManyToMany
-    private Set<Tag> tags;
+    private Set<Tag> tags = new HashSet<>();
 
     /*
      *   토큰 값은 랜덤하게 UUID를 이용해서 생성한다.

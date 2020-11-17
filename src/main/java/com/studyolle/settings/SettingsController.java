@@ -198,6 +198,4 @@ public class SettingsController {
         accountService.removeTag(account, tag.get());
         return ResponseEntity.ok().build();
     }
-
-
 }
