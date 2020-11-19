@@ -16,7 +16,7 @@ import java.io.InputStream;
 *   TODO 나중에 진짜 객체로 변경해야 함
 * */
 @Slf4j
-@Profile("local")   //local환경일 때 이 빈이 등록된다.
+@Profile({"local", "dev"})   //local환경일 때 이 빈이 등록된다.
 @Component
 public class ConsoleMailSender implements JavaMailSender {
     @Override
