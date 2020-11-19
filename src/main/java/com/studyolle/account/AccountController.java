@@ -2,8 +2,6 @@ package com.studyolle.account;
 
 import com.studyolle.domain.Account;
 import lombok.RequiredArgsConstructor;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -12,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
-import java.time.LocalDateTime;
 
 @RequiredArgsConstructor
 @Controller
@@ -67,13 +64,13 @@ public class AccountController {
     }
 
     @GetMapping("/check-email")
-    public String checkEmail(@CurrentUser Account account, Model model) {
+    public String checkEmail(@CurrentAccount Account account, Model model) {
         model.addAttribute("email", account.getEmail());
         return "account/check-email";
     }
 
     @GetMapping("/resend-confirm-email")
-    public String resendConfirmMail(@CurrentUser Account account, Model model) {
+    public String resendConfirmMail(@CurrentAccount Account account, Model model) {
         if (!account.canSendConfirmMail()) {
             model.addAttribute("error", "인증 메일은 1시간에 한 번만 전송할 수 있습니다.");
             model.addAttribute("email", account.getEmail());
@@ -86,7 +83,7 @@ public class AccountController {
     }
 
     @GetMapping("/profile/{nickname}")
-    public String viewProfile(@PathVariable String nickname, Model model, @CurrentUser Account account) {
+    public String viewProfile(@PathVariable String nickname, Model model, @CurrentAccount Account account) {
         if(nickname == null) {
             throw new IllegalArgumentException(nickname + "에 해당하는 유저가 없습니다.");
         }

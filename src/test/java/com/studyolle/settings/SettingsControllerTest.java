@@ -6,9 +6,13 @@ import com.studyolle.account.AccountRepository;
 import com.studyolle.account.AccountService;
 import com.studyolle.domain.Account;
 import com.studyolle.domain.Tag;
+import com.studyolle.domain.Zone;
 import com.studyolle.settings.form.TagForm;
+import com.studyolle.settings.form.ZoneForm;
 import com.studyolle.tag.TagRepository;
+import com.studyolle.zone.ZoneRepository;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +32,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static com.studyolle.settings.SettingsController.*;
 
 @Transactional
 @AutoConfigureMockMvc
@@ -40,7 +45,17 @@ class SettingsControllerTest {
     @Autowired PasswordEncoder passwordEncoder;
     @Autowired ObjectMapper objectMapper;
     @Autowired AccountService accountService;
+    @Autowired ZoneRepository zoneRepository;
+    private Zone testZone = Zone.builder()
+            .city("test")
+            .localNameOfCity("test local")
+            .province("test province")
+            .build();
 
+    @BeforeEach
+    void beforeEach() {
+        zoneRepository.save(testZone);
+    }
 
     /*
     *   @WithAccount를 이용해서 만든 계정을 테스트가 끝나면 지워야 한다.
@@ -48,6 +63,7 @@ class SettingsControllerTest {
     @AfterEach
     void afterEach() {
         accountRepository.deleteAll();
+        zoneRepository.deleteAll();
     }
 
     @DisplayName("프로필 수정 폼(Get요청)")
@@ -55,7 +71,7 @@ class SettingsControllerTest {
     @Test
     void updateProfileForm() throws Exception {
         String bio = "짧은 소개";
-        mockMvc.perform(get(SettingsController.SETTINGS_PROFILE_VIEW_URL))
+        mockMvc.perform(get(ROOT + SETTINGS + PROFILE))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("account"))
                 .andExpect(model().attributeExists("profile"));
@@ -66,11 +82,11 @@ class SettingsControllerTest {
     @Test
     void updateProfile() throws Exception {
         String bio = "test intro";
-        mockMvc.perform(post(SettingsController.SETTINGS_PROFILE_VIEW_URL)
+        mockMvc.perform(post(ROOT + SETTINGS + PROFILE)
                 .param("bio", bio)
                 .with(csrf()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(SettingsController.SETTINGS_PROFILE_VIEW_URL))
+                .andExpect(redirectedUrl(SETTINGS + PROFILE))
                 .andExpect(flash().attributeExists("message"));
 
         Account soyo = accountRepository.findByNickname("soyo");
@@ -83,11 +99,11 @@ class SettingsControllerTest {
     @Test
     void updateProfile_error() throws Exception {
         String bio = "dslkfajsladfjldsajfklwejfhkdsdasjawefhasjkfdhkjahuifewhfiusahfkjsdhfkjwihehfuewhfkweuffsdahfksdahfakjsd";
-        mockMvc.perform(post(SettingsController.SETTINGS_PROFILE_VIEW_URL)
+        mockMvc.perform(post(ROOT + SETTINGS + PROFILE)
         .param("bio", bio)
         .with(csrf()))
                 .andExpect(status().isOk())
-                .andExpect(view().name(SettingsController.SETTINGS_PROFILE_VIEW_NAME))
+                .andExpect(view().name(SETTINGS + PROFILE))
                 .andExpect(model().attributeExists("account"))
                 .andExpect(model().attributeExists("profile"))
                 .andExpect(model().hasErrors());
@@ -100,7 +116,7 @@ class SettingsControllerTest {
     @WithAccount("soyo")
     @Test
     void updatePassword_form() throws Exception {
-        mockMvc.perform(get(SettingsController.SETTINGS_PASSWORD_VIEW_URL))
+        mockMvc.perform(get(ROOT+SETTINGS+PASSWORD))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("account"))
                 .andExpect(model().attributeExists("passwordForm"));
@@ -110,12 +126,12 @@ class SettingsControllerTest {
     @WithAccount("soyo")
     @Test
     void updatePassword_success() throws Exception {
-        mockMvc.perform(post(SettingsController.SETTINGS_PASSWORD_VIEW_URL)
+        mockMvc.perform(post(ROOT+SETTINGS+PASSWORD)
                 .param("newPassword", "12345678")
                 .param("newPassowrdConfirm", "12345678")
                 .with(csrf()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(SettingsController.SETTINGS_PASSWORD_VIEW_URL))
+                .andExpect(redirectedUrl(SETTINGS+PASSWORD))
                 .andExpect(flash().attributeExists("message"));
         Account soyo = accountRepository.findByNickname("soyo");
         assertTrue(passwordEncoder.matches("12345678", soyo.getPassword()));
@@ -125,12 +141,12 @@ class SettingsControllerTest {
     @WithAccount("soyo")
     @Test
     void updatePassword_fail() throws Exception {
-        mockMvc.perform(post(SettingsController.SETTINGS_PASSWORD_VIEW_URL)
+        mockMvc.perform(post(ROOT+SETTINGS+PASSWORD)
         .param("newPassword", "12345678")
         .param("newPasswordConfirm", "12345677")
         .with(csrf()))
                 .andExpect(status().isOk())
-                .andExpect(view().name(SettingsController.SETTINGS_PASSWORD_VIEW_NAME))
+                .andExpect(view().name(SETTINGS+PASSWORD))
                 .andExpect(model().hasErrors())
                 .andExpect(model().attributeExists("passwordForm"))
                 .andExpect(model().attributeExists("account"));
@@ -141,9 +157,9 @@ class SettingsControllerTest {
     @WithAccount("soyo")
     @Test
     void test_notifications_form() throws Exception {
-        mockMvc.perform(get(SettingsController.SETTINGS_NOTIFICATIONS_VIEW_URL))
+        mockMvc.perform(get(ROOT+SETTINGS+NOTIFICATIONS))
                 .andExpect(status().isOk())
-                .andExpect(view().name(SettingsController.SETTINGS_NOTIFICATIONS_VIEW_NAME))
+                .andExpect(view().name(SETTINGS+NOTIFICATIONS))
                 .andExpect(model().attributeExists("account"))
                 .andExpect(model().attributeExists("notifications"));
     }
@@ -152,7 +168,7 @@ class SettingsControllerTest {
     @WithAccount("soyo")
     @Test
     void test_notifications_update_success () throws Exception {
-        mockMvc.perform(post(SettingsController.SETTINGS_NOTIFICATIONS_VIEW_URL)
+        mockMvc.perform(post(ROOT+SETTINGS+NOTIFICATIONS)
                 .param("studyCreatedByEmail", "true")
                 .param("studyCreatedByWeb", "true")
                 .param("studyEnrollmentResultByEmail", "true")
@@ -161,7 +177,7 @@ class SettingsControllerTest {
                 .param("studyUpdatedByWeb", "true")
                 .with(csrf()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(SettingsController.SETTINGS_NOTIFICATIONS_VIEW_URL))
+                .andExpect(redirectedUrl(SETTINGS+NOTIFICATIONS))
                 .andExpect(flash().attributeExists("message"));
 
         Account soyo = accountRepository.findByNickname("soyo");
@@ -179,7 +195,7 @@ class SettingsControllerTest {
     @Test
     void test_notifications_update_fail () throws Exception {
         //boolean이 아니라 다른 타입이 들어오는 경우
-        mockMvc.perform(post(SettingsController.SETTINGS_NOTIFICATIONS_VIEW_URL)
+        mockMvc.perform(post(ROOT+SETTINGS+NOTIFICATIONS)
                 .param("studyCreatedByEmail", "asdsadasdf")
                 .param("studyCreatedByWeb", "21312")
                 .param("studyEnrollmentResultByEmail", "asdsadasdf")
@@ -194,7 +210,7 @@ class SettingsControllerTest {
     @WithAccount("soyo")
     @Test
     void updateAccountForm() throws Exception {
-        mockMvc.perform(get(SettingsController.SETTINGS_ACCOUNT_URL))
+        mockMvc.perform(get(ROOT+SETTINGS+ACCOUNT))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("account"))
                 .andExpect(model().attributeExists("nicknameForm"));
@@ -205,11 +221,11 @@ class SettingsControllerTest {
     @Test
     void test_updateAccount_success() throws Exception {
         String newNickname = "cocoboy";
-        mockMvc.perform(post(SettingsController.SETTINGS_ACCOUNT_URL)
+        mockMvc.perform(post(ROOT+SETTINGS+ACCOUNT)
         .param("nickname", newNickname)
         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(SettingsController.SETTINGS_ACCOUNT_URL))
+                .andExpect(redirectedUrl(SETTINGS+ACCOUNT))
                 .andExpect(flash().attributeExists("message"));
 
         assertNotNull(accountRepository.existsByNickname(newNickname));
@@ -220,11 +236,11 @@ class SettingsControllerTest {
     @Test
     void updateAccount_fail() throws Exception {
                 String newNickname = "¯\\\\_(ツ)_/¯";
-                mockMvc.perform(post(SettingsController.SETTINGS_ACCOUNT_URL)
+                mockMvc.perform(post(ROOT+SETTINGS+ACCOUNT)
                 .param("nickname", newNickname)
                 .with(csrf()))
                 .andExpect(status().isOk())
-                .andExpect(view().name(SettingsController.SETTINGS_ACCOUNT_VIEW_NAME))
+                .andExpect(view().name(SETTINGS+ACCOUNT))
                 .andExpect(model().hasErrors())
                 .andExpect(model().attributeExists("account"))
                 .andExpect(model().attributeExists("nicknameForm"));
@@ -234,8 +250,8 @@ class SettingsControllerTest {
     @WithAccount("soyo")
     @Test
     void updateTagsForm() throws Exception {
-        mockMvc.perform(get(SettingsController.SETTINGS_TAGS_URL))
-                .andExpect(view().name(SettingsController.SETTINGS_TAGS_VIEW_NAME))
+        mockMvc.perform(get(ROOT+SETTINGS+TAGS))
+                .andExpect(view().name(SETTINGS+TAGS))
                 .andExpect(model().attributeExists("account"))
                 .andExpect(model().attributeExists("whitelist"))
                 .andExpect(model().attributeExists("tags"));
@@ -248,7 +264,7 @@ class SettingsControllerTest {
         TagForm tagForm = new TagForm();
         tagForm.setTagTitle("newTag");
 
-        mockMvc.perform(post(SettingsController.SETTINGS_TAGS_URL+"/add")
+        mockMvc.perform(post(ROOT+SETTINGS+TAGS+"/add")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(objectMapper.writeValueAsString(tagForm))
                 .with(csrf()))
@@ -275,14 +291,51 @@ class SettingsControllerTest {
         TagForm tagForm = new TagForm();
         tagForm.setTagTitle("newTag");
 
-        mockMvc.perform(post(SettingsController.SETTINGS_TAGS_URL+"/remove")
+        mockMvc.perform(post(ROOT+SETTINGS+TAGS+"/remove")
             .contentType(MediaType.APPLICATION_JSON_UTF8)
             .content(objectMapper.writeValueAsString(tagForm))
             .with(csrf()))
                 .andExpect(status().isOk());
 
         assertFalse(soyo.getTags().contains(newTag));
-
-
     }
+
+    @DisplayName("계정 지역 정보 추가")
+    @WithAccount("soyo")
+    @Test
+    void addZone() throws Exception {
+        ZoneForm zoneForm = new ZoneForm();
+        zoneForm.setZoneName(testZone.toString());
+
+        mockMvc.perform(post(ROOT+SETTINGS + ZONES + "/add")
+        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .content(objectMapper.writeValueAsString(zoneForm))
+        .with(csrf()))
+                .andExpect(status().isOk());
+
+        Account soyo = accountRepository.findByNickname("soyo");
+        Zone zone = zoneRepository.findByCityAndProvince(testZone.getCity(), testZone.getProvince());
+        assertTrue(soyo.getZones().contains(zone));
+    }
+
+    @DisplayName("계정 지역 정보 삭제")
+    @WithAccount("soyo")
+    @Test
+    void removeZone() throws Exception {
+        Account soyo = accountRepository.findByNickname("soyo");
+        Zone zone = zoneRepository.findByCityAndProvince(testZone.getCity(), testZone.getProvince());
+        accountService.addZone(soyo, zone);
+
+        ZoneForm zoneForm = new ZoneForm();
+        zoneForm.setZoneName(testZone.toString());
+
+        mockMvc.perform(post(ROOT+SETTINGS + ZONES + "/remove")
+        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        .content(objectMapper.writeValueAsString(zoneForm))
+        .with(csrf()))
+                .andExpect(status().isOk());
+
+        assertFalse(soyo.getZones().contains(zone));
+    }
+
 }
