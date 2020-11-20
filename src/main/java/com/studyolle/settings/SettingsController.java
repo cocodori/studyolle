@@ -92,7 +92,7 @@ public class SettingsController {
 
         log.info("profileImage : " + profile.getProfileImage());
         accountService.updateProfile(account, profile);
-        return "redirect:"+SETTINGS + PROFILE;
+        return "redirect:" + ROOT + SETTINGS +PROFILE;
     }
 
     @GetMapping(PASSWORD)
@@ -112,7 +112,7 @@ public class SettingsController {
 
         accountService.updatePassword(account, passwordForm.getNewPassword());
         attributes.addFlashAttribute("message", "패스워드를 변경했습니다.");
-        return "redirect:" + SETTINGS + PASSWORD;
+        return "redirect:" + ROOT + SETTINGS + PASSWORD;
     }
 
     @GetMapping(NOTIFICATIONS)
@@ -132,7 +132,7 @@ public class SettingsController {
         }
         accountService.updateNotifications(account, notifications);
         attributes.addFlashAttribute("message", "알림 설정을 변경했습니다.");
-        return "redirect:" + SETTINGS + NOTIFICATIONS;
+        return "redirect:" + ROOT + SETTINGS + NOTIFICATIONS;
     }
 
     @GetMapping(ACCOUNT)
@@ -152,7 +152,7 @@ public class SettingsController {
 
         accountService.updateNickname(account, nicknameForm.getNickname());
         attributes.addFlashAttribute("message", "닉네임을 수정했습니다.");
-        return "redirect:"+SETTINGS + ACCOUNT;
+        return "redirect:"+ ROOT +SETTINGS + ACCOUNT;
     }
 
     @GetMapping(TAGS)

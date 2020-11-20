@@ -2,6 +2,8 @@ package com.studyolle.account;
 
 import com.studyolle.WithAccount;
 import com.studyolle.domain.Account;
+import com.studyolle.mail.EmailMessage;
+import com.studyolle.mail.EmailService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +61,9 @@ public class AccountControllerTest {
                 .andExpect(unauthenticated());
     }
 
+    @MockBean
+    EmailService emailService;
+
     @DisplayName("회원가입 처리 - 입력 값 정상")
     @Test
     void signUpSubmit_with_correct_input() throws Exception {
@@ -78,7 +83,7 @@ public class AccountControllerTest {
         //가입한 메일이 제대로 등록되었는지
         assertTrue(accountRepository.existsByEmail("email@email.com"));
         //메일 보내는지
-        then(javaMailSender).should().send(any(SimpleMailMessage.class));
+        then(emailService).should().sendEmail(any(EmailMessage.class));
         //토큰값이 잘 생성됐는지
         assertNotNull(account.getEmailCheckToken());
     }

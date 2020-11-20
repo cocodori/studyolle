@@ -86,7 +86,7 @@ class SettingsControllerTest {
                 .param("bio", bio)
                 .with(csrf()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(SETTINGS + PROFILE))
+                .andExpect(redirectedUrl(ROOT+SETTINGS + PROFILE))
                 .andExpect(flash().attributeExists("message"));
 
         Account soyo = accountRepository.findByNickname("soyo");
@@ -131,7 +131,7 @@ class SettingsControllerTest {
                 .param("newPassowrdConfirm", "12345678")
                 .with(csrf()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(SETTINGS+PASSWORD))
+                .andExpect(redirectedUrl(ROOT+SETTINGS+PASSWORD))
                 .andExpect(flash().attributeExists("message"));
         Account soyo = accountRepository.findByNickname("soyo");
         assertTrue(passwordEncoder.matches("12345678", soyo.getPassword()));
@@ -177,7 +177,7 @@ class SettingsControllerTest {
                 .param("studyUpdatedByWeb", "true")
                 .with(csrf()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(SETTINGS+NOTIFICATIONS))
+                .andExpect(redirectedUrl(ROOT+SETTINGS+NOTIFICATIONS))
                 .andExpect(flash().attributeExists("message"));
 
         Account soyo = accountRepository.findByNickname("soyo");
@@ -225,7 +225,7 @@ class SettingsControllerTest {
         .param("nickname", newNickname)
         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(SETTINGS+ACCOUNT))
+                .andExpect(redirectedUrl(ROOT+SETTINGS+ACCOUNT))
                 .andExpect(flash().attributeExists("message"));
 
         assertNotNull(accountRepository.existsByNickname(newNickname));
