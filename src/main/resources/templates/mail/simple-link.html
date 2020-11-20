@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>스터디 올래</title>
+</head>
+<body>
+    <div>
+        <p>안녕하세요. <span th:text="${nickname}"></span>님</p>
+        <h2 th:text="${message}">메세지</h2>
+    </div>
+
+    <div>
+        <a th:href="${host + link}" th:text="${linkName}">Link</a>
+        <p>링크가 동작하지 않으면 아래 URL을 복사해서 브라우저에 붙여넣으세요</p>
+        <small th:text="${host + link}"></small>
+    </div>
+
+    <footer>
+        <small>스터디올래&copy; 2020</small>
+    </footer>
+</body>
+</html>
