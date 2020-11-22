@@ -1,4 +1,4 @@
-package com.studyolle.account;
+package com.studyolle.config;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.NameTokenizers;
