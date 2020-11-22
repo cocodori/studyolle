@@ -6,7 +6,11 @@
     <title>Study Olle</title>
     <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="/node_modules/font-awesome/css/font-awesome.min.css" />
-    <link rel="stylesheet" href="/node_modules/@yaireo/tagify/dist/tagify.css">
+    <link rel="stylesheet" href="/node_modules/@yaireo/tagify/dist/tagify.css" />
+    <link rel="stylesheet" href="/node_modules/summernote/dist/summernote-bs4.min.css" />
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+
     <script src="/node_modules/jquery/dist/jquery.min.js"></script>
     <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/node_modules/jdenticon/dist/jdenticon.min.js"></script>
@@ -19,6 +23,10 @@
             border: 0;
             padding: 0;
             margin: 0;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
         }
     </style>
 </head>
@@ -52,7 +60,7 @@
                 </a>
             </li>
             <li class="nav-item" sec:authorize="isAuthenticated()">
-                <a class="nav-link btn btn-outline-primary" th:href="@{/notifications}">
+                <a class="nav-link btn btn-outline-primary" th:href="@{/new-study}">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                     스터디 개설
                 </a>

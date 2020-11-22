@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments.html :: head"></head>
+<body class="bg-lignt">
+<div th:replace="fragments.html :: main-nav"></div>
+
+<div class="container">
+    <div class="py-5 text-center">
+        <h2>스터디 개설</h2>
+    </div>
+    <div class="row justify-content-center">
+        <form class="needs-validation col-sm-10" th:action="@{/new-study}" th:object="${studyForm}" method="post" novalidate>
+            <div class="form-group">
+                <label for="path">스터디 URL</label>
+                <input id="path" type="text" th:field="*{path}" class="form-control"
+                        placeholder="예) study-path" aria-describedby="pathHelp" required min="2" max="20">
+                <small id="pathHelp" class="form-text text-muted">
+                    공백없이 문자, 숫자, 대시(-)와 언더바(_)만 2자 이상 이상 20자 이내로 작성하세요.
+                    스터디 홈 주소에 사용합니다. 예) /study/<b>study-path</b>
+                </small>
+                <small class="form-text text-danger" th:if="${#fields.hasErrors('path')}" th:errors="*{path}">Path Error</small>
+            </div>
+
+            <div class="form-group">
+                <label for="title">스터디 이름</label>
+                <input id="title" type="text" th:field="*{title}" class="form-control"
+                       placeholder="어떤 스터디인가요?" aria-describedby="titleHelp" required min="1" max="50">
+                <small id="titleHelp" class="form-text text-muted">50자 이내로 입력하세요.</small>
+                <small class="form-text text-danger" th:if="${#fields.hasErrors('title')}" th:errors="*{title}">Title Error</small>
+            </div>
+
+            <div class="form-group">
+                <label for="shortDescription">간략한 소개</label>
+                <input id="shortDescription" type="text" th:field="*{shortDescription}" class="form-control"
+                       placeholder="간략하게 스터디를 소개해주세요!" aria-describedby="shortDescriptionHelp" required max="100">
+                <small id="shortDescriptionHelp" class="form-text text-muted">100자 이내로 입력해주세요.</small>
+                <small class="form-text text-danger" th:if="${#fields.hasErrors('shortDescription')}" th:errors="*{shortDescription}">
+                    shortDescription Error</small>
+            </div>
+
+            <div class="form-group">
+                <label for="fullDescription">상세 소개</label>
+                <textarea id="fullDescription" type="text" th:field="*{fullDescription}" class="form-control"
+                       placeholder="스터디에 대해 자세히 설명해주세요." aria-describedby="fullDescriptionHelp" required></textarea>
+                <small id="fullDescriptionHelp"
+                       class="form-text text-muted">목표, 일정, 진행 방식, 교재 또는 강좌 등 자세하게 설명해주세요.</small>
+                <small class="invalid-feedback">상세 소개를 입력하세요.</small>
+                <small class="form-text text-danger" th:if="${#fields.hasErrors('fullDescription')}"
+                       th:errors="*{fullDescription}">fullDescription Error</small>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary-block"
+                        aria-describedby="submitHelp">스터디 만들기</button>
+            </div>
+        </form>
+
+    </div>
+    <footer th:replace="fragments.html :: footer"></footer>
+</div><!-- container-->
+<script th:replace="fragments.html :: form-validation"></script>
+<script src="/node_modules/summernote/dist/summernote-bs4.js"></script>
+<script>
+    $(function () {
+        $('#fullDescription').summernote({
+            fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Noto Sans KR', 'Merriweather'],
+            placeholder: '목표, 일정, 진행 방식, 교재 또는 강좌 등 자세하게 설명해주세요.',
+            tabsize: 2,
+            height: 300
+        })
+    })
+</script>
+</body>
+</html>
