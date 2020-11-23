@@ -92,6 +92,9 @@ public class Account {
         return this.emailCheckTokenGeneratedAt.isBefore(LocalDateTime.now().minusHours(1));
     }
 
+    /*
+    *   현재 사용자가 스터디 관리자 권한을 가지고 있는지 체크
+    * */
     public boolean isManagerOf(Study study) {
         return study.getManagers().contains(this);
     }

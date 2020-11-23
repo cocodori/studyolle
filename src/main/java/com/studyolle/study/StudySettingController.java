@@ -51,8 +51,40 @@ public class StudySettingController {
         studyService.updateStudyDescription(study, studyDescriptionForm);
         attributes.addFlashAttribute("message", "스터디 소개를 수정했습니다.");
         return "redirect:/study/"+ getPath(path) + "/settings/description";
+    }
 
+    @GetMapping("/banner")
+    public String studyBannerForm(@CurrentAccount Account account, @PathVariable String path, Model model) {
+        //업데이트 할 권한이 있는지 체크
+        Study study = studyService.getStudyToUpdate(account, path);
+        model.addAttribute(account);
+        model.addAttribute(study);
 
+        return "study/settings/banner";
+    }
+
+    @PostMapping("/banner")
+    public String studyBannerSubmit(@CurrentAccount Account account, @PathVariable String path,
+                                    String image ,Model model, RedirectAttributes attributes) {
+        Study study = studyService.getStudyToUpdate(account, path);
+        studyService.updateStudyImage(study, image);
+        attributes.addFlashAttribute("message", "스터디 이미지를 수정했습니다.");
+
+        return "redirect:/study/"+getPath(path)+"/settings/banner";
+    }
+
+    @PostMapping("/banner/enable")
+    public String enableStudyBanner(@CurrentAccount Account account, @PathVariable String path) {
+        Study study = studyService.getStudyToUpdate(account, path);
+        studyService.enableStudyBanner(study);
+        return "redirect:/study/"+getPath(path)+"/settings/banner";
+    }
+
+    @PostMapping("/banner/disable")
+    public String disableStudyBanner(@CurrentAccount Account account, @PathVariable String path) {
+        Study study = studyService.getStudyToUpdate(account, path);
+        studyService.disableStudyBanner(study);
+        return "redirect:/study/"+getPath (path)+"/settings/banner";
     }
 
     private String getPath(String path) {

@@ -25,6 +25,20 @@
             margin: 0;
         }
 
+        #study-logo {
+            height: 200px;
+            width: 100%;
+            overflow: hidden;
+            padding: 0;
+            margin: 0;
+        }
+
+        #study-logo img {
+            height: auto;
+            width: 100%;
+            overflow: hidden;
+
+
         body {
             font-family: 'Roboto', sans-serif;
         }
@@ -137,7 +151,7 @@
 </script>
 
 <div th:fragment="banner" th:if="${study.useBanner}" class="row" id="study-logo">
-    <img th:src="${study.image}"/ >
+    <img th:src="${study.image}" />
 </div>
 
 <div th:fragment="study-info">
@@ -247,8 +261,8 @@
     <a class="list-group-item list-group-item-action" th:classappend="${currentMenu == 'description'}? active"
         th:href="@{'/study/'+${study.path}+'/settings/description'}">소개</a>
 
-    <a class="list-group-item list-group-item-action" th:classappend="${currentMenu == 'image'}? active"
-        th:href="@{'/study/'+${study.path}+'/settings/image'}">배너 이미지</a>
+    <a class="list-group-item list-group-item-action" th:classappend="${currentMenu == 'banner'}? active"
+        th:href="@{'/study/'+${study.path}+'/settings/banner'}">배너 이미지</a>
 
     <a class="list-group-item list-group-item-action" th:classappend="${currentMenu == 'tags'}? active"
         th:href="@{'/study/'+${study.path}+'/settings/tags'}">스터디 주제</a>
@@ -280,5 +294,11 @@
         <span aria-hidden="true">x</span>
     </button>
 </div>
+
+<script th:fragment="tooltip">
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+</script>
 
 </html>
