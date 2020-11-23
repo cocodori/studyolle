@@ -84,12 +84,10 @@ public class AccountController {
 
     @GetMapping("/profile/{nickname}")
     public String viewProfile(@PathVariable String nickname, Model model, @CurrentAccount Account account) {
-        if(nickname == null) {
-            throw new IllegalArgumentException(nickname + "에 해당하는 유저가 없습니다.");
-        }
-        Account byNickname = accountRepository.findByNickname(nickname);
-        model.addAttribute("account", byNickname);
-        model.addAttribute("isOwner", byNickname.equals(account));
+        Account getAccount = accountService.getAccount(nickname);
+
+        model.addAttribute("account", getAccount);
+        model.addAttribute("isOwner", getAccount.equals(account));
         return "account/profile";
     }
 

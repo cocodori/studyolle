@@ -58,16 +58,6 @@
     <footer th:replace="fragments.html :: footer"></footer>
 </div><!-- container-->
 <script th:replace="fragments.html :: form-validation"></script>
-<script src="/node_modules/summernote/dist/summernote-bs4.js"></script>
-<script>
-    $(function () {
-        $('#fullDescription').summernote({
-            fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Noto Sans KR', 'Merriweather'],
-            placeholder: '목표, 일정, 진행 방식, 교재 또는 강좌 등 자세하게 설명해주세요.',
-            tabsize: 2,
-            height: 300
-        })
-    })
-</script>
+<script th:replace="fragments.html :: editor-script"></script>
 </body>
 </html>
