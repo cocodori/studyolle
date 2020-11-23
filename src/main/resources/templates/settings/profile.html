@@ -108,6 +108,10 @@
 
         $("#profile-image-file").change(function(e) {
             if (e.target.files.length === 1) {
+                if (!e.target.result.startsWith("data:image")) {
+                    alert("이미지 파일을 선택하세요.");
+                    return;
+                }
                 const reader = new FileReader();
                 reader.onload = e => {
                     if (e.target.result) {
@@ -115,6 +119,7 @@
                         img.id = 'new-profile';
                         img.src = e.target.result;
                         img.width = 250;
+                        img.setAttribute('width', '100%');
 
                         $newProfileImage.html(img);
                         $newProfileImage.show();
@@ -146,6 +151,12 @@
 
         $cutBtn.click(function () {
             let dataUrl = cropper.getCroppedCanvas().toDataURL();
+
+            if (dataUrl.length > 1000 * 1024) {
+                alert("이미지 파일이 너무 큽니다. 10MB 보다 작은 파일을 사용하세요. 현재 이미지 사이즈 " + dataUrl.length);
+                return;
+            }
+
             let newImage = document.createElement("img");
             newImage.id = "cropped-new-profile-image";
             newImage.src = dataUrl;
