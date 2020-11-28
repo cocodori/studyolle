@@ -11,6 +11,7 @@ import com.studyolle.settings.form.*;
 import com.studyolle.settings.validator.NicknameValidator;
 import com.studyolle.settings.validator.PasswordFormValidator;
 import com.studyolle.tag.TagRepository;
+import com.studyolle.tag.TagService;
 import com.studyolle.zone.ZoneRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,6 +51,7 @@ public class SettingsController {
     private final TagRepository tagRepository;
     private final ZoneRepository zoneRepository;
     private final ObjectMapper objectMapper;
+    private final TagService tagService;
 
     @InitBinder("passwordForm")
     public void passwordFormInitBinder(WebDataBinder webDataBinder) {
@@ -177,10 +179,7 @@ public class SettingsController {
                                  @RequestBody TagForm tagForm) {
         String title = tagForm.getTagTitle();
 
-        Tag tag = tagRepository.findByTitle(title)
-                .orElseGet(() -> tagRepository.save(Tag.builder()
-                                            .title(title)
-                                            .build()));
+        Tag tag = tagService.findOrCreateNew(title);
 
         accountService.addTag(account, tag);
         return ResponseEntity.ok().build();
