@@ -125,7 +125,7 @@ public class Study {
         throw new RuntimeException("모집을 멈출 수 없습니다.");
     }
 
-    private boolean canUpdateRecruiting() {
+    public boolean canUpdateRecruiting() {
         return this.published && this.recruingUpdatedDateTime == null
                 || this.recruingUpdatedDateTime.isBefore(LocalDateTime.now().minusHours(1));
     }

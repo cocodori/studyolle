@@ -26,7 +26,7 @@
                             <button class="btn btn-outline-primary" type="submit" aria-describedby="submitHelp">스터디 공개</button>
                         </div>
                     </form>
-                    <form th:if="${study.published && !study.closed}" class="col-sm-12" th:action="@{'/study/'+${study.getPath()}+'/settings/study/close'}" novalidate>
+                    <form th:if="${study.published && !study.closed}" class="col-sm-12" th:action="@{'/study/'+${study.getPath()}+'/settings/study/close'}" method="post" novalidate>
                         <div class="alert alert-warning" role="alert">
                             스터디 활동을 마쳤다면 스터디를 종료하세요.<br/>
                             스터디를 종료하면 더이상 팀원을 모집하거나 모임을 만들 수 없으며, 스터디 경로와 이름을 수정할 수 없습니다.<br/>

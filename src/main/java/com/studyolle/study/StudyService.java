@@ -102,4 +102,12 @@ public class StudyService {
     public void publish(Study study) {
         study.publish();
     }
+
+    public void startRecruit(Study study) {
+        study.startRecruit();
+    }
+
+    public void close(Study study) {
+        study.close();
+    }
 }
