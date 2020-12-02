@@ -140,7 +140,7 @@ public class StudySettingController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping
+    @PostMapping("/tags/remove")
     @ResponseBody
     public ResponseEntity removeTag(@CurrentAccount Account account, @PathVariable String path,
                                     @RequestBody TagForm tagForm) {
@@ -204,5 +204,26 @@ public class StudySettingController {
 
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/study")
+    public String studySettingForm(@CurrentAccount Account account, @PathVariable String path, Model model) {
+        Study study = studyService.getStudyToUpdate(account, path);
+        model.addAttribute(account);
+        model.addAttribute(study);
+
+        return "study/settings/study";
+    }
+
+    @PostMapping("/study/publish")
+    public String publishStudy(@CurrentAccount Account account, @PathVariable String path, RedirectAttributes attributes) {
+        Study study = studyService.getStudyToUpdateStatus(account, path);
+        studyService.publish(study); // 스터디 공개
+        attributes.addFlashAttribute("message", "스터디를 공개했습니다.");
+
+        return "redirect:/study/"+getPath(path)+"/settings/study";
+
+    }
+
+
 
 }

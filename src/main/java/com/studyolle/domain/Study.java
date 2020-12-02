@@ -13,16 +13,15 @@ import java.util.Set;
         @NamedAttributeNode("tags"),
         @NamedAttributeNode("zones"),
         @NamedAttributeNode("managers"),
-        @NamedAttributeNode("members")
-})
+        @NamedAttributeNode("members")})
 @NamedEntityGraph(name = "Study.withTagsAndManagers", attributeNodes = {
         @NamedAttributeNode("tags"),
-        @NamedAttributeNode("managers")
-})
+        @NamedAttributeNode("managers")})
 @NamedEntityGraph(name = "Study.withZonesAndManagers", attributeNodes = {
         @NamedAttributeNode("zones"),
-        @NamedAttributeNode("managers")
-})
+        @NamedAttributeNode("managers")})
+@NamedEntityGraph(name = "Study.withManagers", attributeNodes = {
+        @NamedAttributeNode("managers")})
 @Builder @AllArgsConstructor @NoArgsConstructor
 @Getter @Setter @EqualsAndHashCode(of="id")
 @Entity
@@ -59,7 +58,7 @@ public class Study {
 
     private LocalDateTime closedDateTime;   // 스터디 모집 종료
 
-    private LocalDateTime recruiingUpdatedDateTime; //모집 제한
+    private LocalDateTime recruingUpdatedDateTime; //모집 제한
 
     private boolean recruiting; //모집 여부
 
@@ -86,5 +85,48 @@ public class Study {
 
     public boolean isManager(UserAccount userAccount) {
         return this.managers.contains(userAccount.getAccount());
+    }
+
+    public void publish() { //스터디 공개
+        if (!this.closed && !this.published) {
+            this.published = true;
+            this.publishedDateTime = LocalDateTime.now();
+            return;
+        }
+
+        throw new RuntimeException("스터디를 공개할 수 없는 상태입니다.");
+    }
+
+    public void close() {
+        if (this.published && !this.closed) {
+            this.closed = true;
+            this.closedDateTime = LocalDateTime.now();
+            return;
+        }
+
+        throw new RuntimeException("스터디를 종료할 수 없습니다.");
+    }
+
+    public void startRecruit() {
+        if (canUpdateRecruiting()) {
+            this.recruiting = true;
+            this.recruingUpdatedDateTime = LocalDateTime.now();
+            return;
+        }
+        throw new RuntimeException("인원 모집을 시작할 수 없습니다.");
+    }
+
+    public void stopRecruit() {
+        if (canUpdateRecruiting()) {
+            this.recruiting = false;
+            this.recruingUpdatedDateTime = LocalDateTime.now();
+            return;
+        }
+        throw new RuntimeException("모집을 멈출 수 없습니다.");
+    }
+
+    private boolean canUpdateRecruiting() {
+        return this.published && this.recruingUpdatedDateTime == null
+                || this.recruingUpdatedDateTime.isBefore(LocalDateTime.now().minusHours(1));
     }
 }

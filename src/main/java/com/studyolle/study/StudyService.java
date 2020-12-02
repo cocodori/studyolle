@@ -90,4 +90,16 @@ public class StudyService {
 
         return study;
     }
+
+    public Study getStudyToUpdateStatus(Account account, String path) {
+        Study study = studyRepository.findStudyWithManagersByPath(path);
+        checkIfExistingStudy(path, study);
+        checkIfManager(account, study);
+
+        return study;
+    }
+
+    public void publish(Study study) {
+        study.publish();
+    }
 }
