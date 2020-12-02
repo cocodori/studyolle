@@ -136,4 +136,20 @@ public class StudyService {
     public boolean isValidTitle(String newTitle) {
         return newTitle.length() <= 50;
     }
+
+    public void remove(Study study) {
+        if (study.isRemovable()) {
+            studyRepository.delete(study);
+            return;
+        }
+        throw new IllegalArgumentException("스터디를 삭제할 수 없습니다.");
+    }
+
+    public void addMember(Study study, Account account) {
+        study.addMember(account);
+    }
+
+    public void removeMember(Study study, Account account) {
+        study.removeMember(account);
+    }
 }
