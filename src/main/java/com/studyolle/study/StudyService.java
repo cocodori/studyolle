@@ -13,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+import static com.studyolle.study.form.StudyForm.VALID_PATH_PATTERN;
+
 @Transactional
 @RequiredArgsConstructor
 @Service
@@ -113,5 +115,17 @@ public class StudyService {
 
     public void stopRecruit(Study study) {
         study.stopRecruit();
+    }
+
+    public boolean isValidPath(String newPath) {
+        if (!newPath.matches(VALID_PATH_PATTERN)) {
+            return false;
+        }
+
+        return !studyRepository.existsByPath(newPath);
+    }
+
+    public void updateStudyPath(Study study, String newPath) {
+        study.setPath(newPath);
     }
 }
