@@ -128,4 +128,8 @@ public class StudyService {
     public void updateStudyPath(Study study, String newPath) {
         study.setPath(newPath);
     }
+
+    public void updateStudyTitle(Study study, String newTitle) {
+        study.setTitle(newTitle);
+    }
 }

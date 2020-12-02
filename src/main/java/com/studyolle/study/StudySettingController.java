@@ -275,7 +275,24 @@ public class StudySettingController {
         return "redirect:/study/"+getPath(newPath)+"/settings/study";
     }
 
+    @PostMapping("/study/title")
+    public String updateStudyTitle(@CurrentAccount Account account, @PathVariable String path, String newTitle,
+                                   Model model, RedirectAttributes attributes) {
+        Study study = studyService.getStudyToUpdateStatus(account, path);
+        if (!studyService.isValidPath(newTitle)) {
+            model.addAttribute(account);
+            model.addAttribute(study);
+            model.addAttribute("studyError", "스터디 이름을 다시 입력하세요.");
 
+            return "study/settings/study";
+        }
+
+        studyService.updateStudyTitle(study, newTitle);
+
+        attributes.addFlashAttribute("message", "제목을 수정했습니다.");
+
+        return "redirect:/study/"+getPath(path)+"/settings/study";
+    }
 
 
 }
