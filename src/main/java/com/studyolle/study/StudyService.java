@@ -27,7 +27,7 @@ public class StudyService {
     }
 
     public Study getStudyToUpdate(Account account, String path) {
-        Study study = studyRepository.findAccountWithTagByPath(path);
+        Study study = studyRepository.findStudyWithTagByPath(path);
         checkIfExistingStudy(path, study);
         checkIfManager(account, study);
         return study;
@@ -84,7 +84,7 @@ public class StudyService {
     }
 
     public Study getStudyToUpdateZone(Account account, String path) {
-        Study study = studyRepository.findAccountWithZonesByPath(path);
+        Study study = studyRepository.findStudyWithZonesByPath(path);
         checkIfExistingStudy(path, study);
         checkIfManager(account, study);
 
