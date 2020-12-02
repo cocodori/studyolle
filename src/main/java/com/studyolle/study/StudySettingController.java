@@ -279,7 +279,7 @@ public class StudySettingController {
     public String updateStudyTitle(@CurrentAccount Account account, @PathVariable String path, String newTitle,
                                    Model model, RedirectAttributes attributes) {
         Study study = studyService.getStudyToUpdateStatus(account, path);
-        if (!studyService.isValidPath(newTitle)) {
+        if (!studyService.isValidTitle(newTitle)) {
             model.addAttribute(account);
             model.addAttribute(study);
             model.addAttribute("studyError", "스터디 이름을 다시 입력하세요.");
