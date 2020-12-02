@@ -244,4 +244,21 @@ public class StudySettingController {
         return "redirect:/study/"+getPath(path)+"/settings/study";
     }
 
+    @PostMapping("/recruit/stop")
+    public String stopRecruit(@CurrentAccount Account account, @PathVariable String path,
+                              Model model, RedirectAttributes attributes) {
+        Study study = studyService.getStudyToUpdateStatus(account, path);
+        if (!study.canUpdateRecruiting()) {
+            attributes.addFlashAttribute("message", "모집 인원 설정은 한 시간에 한 번만 가능합니다.");
+            return "redirect:/study/"+getPath(path)+"/settings/study";
+        }
+
+        studyService.stopRecruit(study);
+        attributes.addFlashAttribute("message", "인원 모집을 중단합니다.");
+        return "redirect:/study/"+getPath(path)+"/settings/study";
+    }
+
+
+
+
 }
