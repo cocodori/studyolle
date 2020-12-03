@@ -1,6 +1,7 @@
 package com.studyolle.study;
 
 import com.studyolle.WithAccount;
+import com.studyolle.account.AccountRepository;
 import com.studyolle.domain.Study;
 import com.studyolle.study.form.StudyForm;
 import lombok.RequiredArgsConstructor;
@@ -23,12 +24,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @SpringBootTest
 public class StudyControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    StudyRepository studyRepository;
+    
+    @Autowired protected MockMvc mockMvc;
+    @Autowired protected StudyService studyService;
+    @Autowired protected StudyRepository studyRepository;
+    @Autowired protected AccountRepository accountRepository;
 
     @WithAccount("soyo")
     @DisplayName("스터디 개설 테스트")
