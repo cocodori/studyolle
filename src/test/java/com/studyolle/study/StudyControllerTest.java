@@ -2,6 +2,7 @@ package com.studyolle.study;
 
 import com.studyolle.WithAccount;
 import com.studyolle.account.AccountRepository;
+import com.studyolle.domain.Account;
 import com.studyolle.domain.Study;
 import com.studyolle.study.form.StudyForm;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +22,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Transactional
-@AutoConfigureMockMvc
 @SpringBootTest
+@AutoConfigureMockMvc
+@RequiredArgsConstructor
 public class StudyControllerTest {
     
     @Autowired protected MockMvc mockMvc;
@@ -50,6 +52,13 @@ public class StudyControllerTest {
         assertEquals(getStudy.getPath(), path);
     }
 
+
+    protected Study createStudy(String path, Account manager) {
+        Study study = new Study();
+        study.setPath(path);
+        studyService.createNewStudy(study, manager);
+        return study;
+    }
 
 
 }

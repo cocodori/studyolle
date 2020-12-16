@@ -66,7 +66,7 @@ public class EventController {
     public String getEvent(@CurrentAccount Account account, @PathVariable String path,
                            @PathVariable Long id, Model model) {
         model.addAttribute(account);
-        model.addAttribute(eventRepository.findById(id).orElseThrow());
+        model.addAttribute("event", eventRepository.findById(id).orElseThrow());
         model.addAttribute(studyRepository.findStudyWithManagersByPath(path));
 
         return "event/view";
@@ -97,7 +97,7 @@ public class EventController {
         return "study/events";
     }
 
-    @GetMapping("/event/{id}/edit")
+    @GetMapping("/events/{id}/edit")
     public String updateEventForm(@CurrentAccount Account account, @PathVariable String path,
                                   @PathVariable Long id, Model model) {
         Study study = studyService.getStudyToUpdate(account, path);
@@ -111,7 +111,7 @@ public class EventController {
         return "event/update-form";
     }
 
-    @PostMapping("/event/{id}/edit")
+    @PostMapping("/events/{id}/edit")
     public String updateEventSubmit(@CurrentAccount Account account, @PathVariable String path,
                                     @PathVariable Long id, @Valid EventForm eventForm, Errors errors, Model model) {
         Study study = studyService.getStudyToUpdate(account, path);
@@ -139,6 +139,23 @@ public class EventController {
         eventService.deleteEvent(eventRepository.findById(id).orElseThrow());
 
         return "redirect:/study/" + study.getEncodedPath() + "/events";
+    }
+
+    @PostMapping("/events/{id}/enroll")
+    public String newEnrollment(@CurrentAccount Account account, @PathVariable String path, @PathVariable Long id) {
+        Study study = studyService.getStudyToEnroll(path);
+
+        eventService.newEnrollment(eventRepository.findById(id).orElseThrow(), account);
+
+        return "redirect:/study/"+study.getEncodedPath() + "/events/" + id;
+    }
+
+    @PostMapping("/events/{id}/disenroll")
+    public String cancelEnrollment(@CurrentAccount Account account, @PathVariable String path, @PathVariable Long id) {
+        Study study = studyService.getStudyToEnroll(path);
+        eventService.cancelEnrollment(eventRepository.findById(id).orElseThrow(), account);
+
+        return "redirect:/study/"+study.getEncodedPath()+"/events/"+id;
     }
 
 
