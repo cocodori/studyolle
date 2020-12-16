@@ -31,14 +31,14 @@ class EventControllerTest extends StudyControllerTest {
     @WithAccount("soyo")
     @Test
     void newEnrollment() throws Exception {
-        Account soyo = createAccount("soyo");
+        Account soyo = accountRepository.findByNickname("soyo");
         Study study = createStudy("test-study", soyo);
         Event event = createEvent("test-event", EventType.FCFS, 2, study, soyo);
 
-        mockMvc.perform(post("/study/"+study.getPath()+"/events/"+event.getId())
+        mockMvc.perform(post("/study/" + study.getPath() + "/events/" + event.getId() + "/enroll")
                 .with(csrf()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/study/"+study.getPath()+"/events"+event.getId()));
+                .andExpect(redirectedUrl("/study/"+study.getPath()+"/events/"+event.getId()));
 
         Account afterCocoboy = accountRepository.findByNickname("cocoboy");
         isAccepted(soyo, event);
