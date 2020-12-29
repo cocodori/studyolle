@@ -112,6 +112,14 @@
             <artifactId>modelmapper</artifactId>
             <version>2.3.8</version>
         </dependency>
+
+        <!-- 패키지 의존성 테스트 -->
+        <dependency>
+            <groupId>com.tngtech.archunit</groupId>
+            <artifactId>archunit-junit5</artifactId>
+            <version>0.13.1</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
