@@ -1,5 +1,6 @@
 package com.studyolle.modules.main;
 
+import com.studyolle.infra.MockMvcTest;
 import com.studyolle.modules.account.AccountRepository;
 import com.studyolle.modules.account.AccountService;
 import com.studyolle.modules.account.SignupForm;
@@ -20,8 +21,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@AutoConfigureMockMvc
-@SpringBootTest
+@MockMvcTest
 class MainControllerTest {
     /*
     *   JUnit5는 Dependency Injection을 지원하는데, 타입이 정해져있다.

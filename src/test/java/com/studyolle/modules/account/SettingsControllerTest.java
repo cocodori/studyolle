@@ -1,6 +1,7 @@
 package com.studyolle.modules.account;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.studyolle.infra.MockMvcTest;
 import com.studyolle.modules.account.WithAccount;
 import com.studyolle.modules.account.AccountRepository;
 import com.studyolle.modules.account.AccountService;
@@ -33,9 +34,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static com.studyolle.modules.account.SettingsController.*;
 
-@Transactional
-@AutoConfigureMockMvc
-@SpringBootTest
+@MockMvcTest
 class SettingsControllerTest {
 
     @Autowired MockMvc mockMvc;

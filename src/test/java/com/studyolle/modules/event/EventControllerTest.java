@@ -1,13 +1,18 @@
 package com.studyolle.modules.event;
 
+import com.studyolle.infra.MockMvcTest;
+import com.studyolle.modules.account.AccountFactory;
+import com.studyolle.modules.account.AccountRepository;
 import com.studyolle.modules.account.WithAccount;
 import com.studyolle.modules.account.Account;
 import com.studyolle.modules.study.Study;
 import com.studyolle.modules.study.StudyControllerTest;
+import com.studyolle.modules.study.StudyFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -18,19 +23,22 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Transactional
-@SpringBootTest
-class EventControllerTest extends StudyControllerTest {
+@MockMvcTest
+class EventControllerTest {
 
+    @Autowired MockMvc mockMvc;
+    @Autowired StudyFactory studyFactory;
+    @Autowired AccountFactory accountFactory;
     @Autowired EventService eventService;
     @Autowired EnrollmentRepository enrollmentRepository;
+    @Autowired AccountRepository accountRepository;
 
     @DisplayName("선착순 모임에 참가 신청 - 자동 수락")
     @WithAccount("soyo")
     @Test
     void newEnrollment() throws Exception {
         Account soyo = accountRepository.findByNickname("soyo");
-        Study study = createStudy("test-study", soyo);
+        Study study = studyFactory.createStudy("test-study", soyo);
         Event event = createEvent("test-event", EventType.FCFS, 2, study, soyo);
 
         mockMvc.perform(post("/study/" + study.getPath() + "/events/" + event.getId() + "/enroll")
