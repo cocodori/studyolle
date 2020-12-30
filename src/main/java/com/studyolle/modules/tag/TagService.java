@@ -11,8 +11,10 @@ public class TagService {
     private final TagRepository tagRepository;
 
     public Tag findOrCreateNew(String tagTitle) {
-        Tag tag = tagRepository.findByTitle(tagTitle)
-                .orElse(tagRepository.save(Tag.builder().title(tagTitle).build()));
+        Tag tag = tagRepository.findByTitle(tagTitle);
+        if (tag == null) {
+            tag = tagRepository.save(Tag.builder().title(tagTitle).build());
+        }
         return tag;
     }
 }

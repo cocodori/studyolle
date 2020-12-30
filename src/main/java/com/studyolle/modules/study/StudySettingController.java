@@ -99,26 +99,17 @@ public class StudySettingController {
     }
 
     @GetMapping("/tags")
-    public String studyTagForm(@CurrentAccount Account account, @PathVariable String path, Model model) throws JsonProcessingException {
+    public String studyTagsForm(@CurrentAccount Account account, @PathVariable String path, Model model)
+            throws JsonProcessingException {
         Study study = studyService.getStudyToUpdate(account, path);
         model.addAttribute(account);
         model.addAttribute(study);
 
-        List<String> tag = study.getTags()
-                .stream()
-                .map(Tag::getTitle)
-                .collect(Collectors.toList());
-
-        List<String> allTagTitle = tagRepository.findAll()
-                .stream()
+        model.addAttribute("tags", study.getTags().stream()
+                .map(Tag::getTitle).collect(Collectors.toList()));
+        List<String> allTagTitles = tagRepository.findAll().stream()
                 .map(Tag::getTitle).collect(Collectors.toList());
-
-        tag.forEach(el -> System.out.println(el));
-        allTagTitle.forEach(el -> System.out.println(el));
-
-        model.addAttribute("tags", tag);
-        model.addAttribute("whitelist", objectMapper.writeValueAsString(allTagTitle));
-
+        model.addAttribute("whitelist", objectMapper.writeValueAsString(allTagTitles));
         return "study/settings/tags";
     }
 
@@ -126,10 +117,9 @@ public class StudySettingController {
     @ResponseBody
     public ResponseEntity addTag(@CurrentAccount Account account, @PathVariable String path,
                                  @RequestBody TagForm tagForm) {
-        Study study = studyService.getStudyToUpdate(account, path);
+        Study study = studyService.getStudyToUpdateTag(account, path);
         Tag tag = tagService.findOrCreateNew(tagForm.getTagTitle());
         studyService.addTag(study, tag);
-
         return ResponseEntity.ok().build();
     }
 
@@ -138,8 +128,8 @@ public class StudySettingController {
     public ResponseEntity removeTag(@CurrentAccount Account account, @PathVariable String path,
                                     @RequestBody TagForm tagForm) {
         Study study = studyService.getStudyToUpdate(account, path);
-        Optional<Tag> tag = tagRepository.findByTitle(tagForm.getTagTitle());
-        if (tag.isEmpty()) {
+        Tag tag = tagRepository.findByTitle(tagForm.getTagTitle());
+        if (tag == null) {
             return ResponseEntity.badRequest().build();
         }
         studyService.removeTag(study, tag);

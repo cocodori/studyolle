@@ -268,12 +268,12 @@ class SettingsControllerTest {
                 .with(csrf()))
                 .andExpect(status().isOk());
 
-        Optional<Tag> newTag = tagRepository.findByTitle("newTag");
+        Tag newTag = tagRepository.findByTitle("newTag");
 
         Account soyo = accountRepository.findByNickname("soyo");
 
-        assertThat(newTag).isNotEmpty();
-        assertTrue(soyo.getTags().contains(newTag.get()));
+        assertThat(newTag).isNotNull();
+        assertTrue(soyo.getTags().contains(newTag));
     }
 
     @DisplayName("계정 내 태그 삭제")

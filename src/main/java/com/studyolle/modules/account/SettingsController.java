@@ -170,14 +170,10 @@ public class SettingsController {
         return SETTINGS + TAGS;
     }
 
+    @PostMapping(TAGS + "/add")
     @ResponseBody
-    @PostMapping(TAGS+"/add")
-    public ResponseEntity addTag(@CurrentAccount Account account,
-                                 @RequestBody TagForm tagForm) {
-        String title = tagForm.getTagTitle();
-
-        Tag tag = tagService.findOrCreateNew(title);
-
+    public ResponseEntity addTag(@CurrentAccount Account account, @RequestBody TagForm tagForm) {
+        Tag tag = tagService.findOrCreateNew(tagForm.getTagTitle());
         accountService.addTag(account, tag);
         return ResponseEntity.ok().build();
     }
@@ -188,13 +184,13 @@ public class SettingsController {
                                  @RequestBody TagForm tagForm) {
         String title = tagForm.getTagTitle();
 
-        Optional<Tag> tag = tagRepository.findByTitle(title);
+        Tag tag = tagRepository.findByTitle(title);
 
-        if (tag.isEmpty()) {
+        if (tag == null) {
             return ResponseEntity.badRequest().build();
         }
 
-        accountService.removeTag(account, tag.get());
+        accountService.removeTag(account, tag);
         return ResponseEntity.ok().build();
     }
     

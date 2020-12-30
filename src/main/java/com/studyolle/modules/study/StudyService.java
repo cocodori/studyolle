@@ -27,12 +27,11 @@ public class StudyService {
     public Study createNewStudy(Study study, Account account) {
         Study newStudy = studyRepository.save(study);
         newStudy.addManager(account);
-        eventPublisher.publishEvent(new StudyCreatedEvent(study));
         return newStudy;
     }
 
     public Study getStudyToUpdate(Account account, String path) {
-        Study study = studyRepository.findStudyWithTagByPath(path);
+        Study study = studyRepository.findStudyWithTagsByPath(path);
         checkIfExistingStudy(path, study);
         checkIfManager(account, study);
         return study;
@@ -76,7 +75,7 @@ public class StudyService {
         study.getTags().add(tag);
     }
 
-    public void removeTag(Study study, Optional<Tag> tag) {
+    public void removeTag(Study study, Tag tag) {
         study.getTags().remove(tag);
     }
 
@@ -106,6 +105,7 @@ public class StudyService {
 
     public void publish(Study study) {
         study.publish();
+        this.eventPublisher.publishEvent(new StudyCreatedEvent(study));
     }
 
     public void startRecruit(Study study) {
@@ -161,6 +161,13 @@ public class StudyService {
 
         checkIfExistingStudy(path, study);
 
+        return study;
+    }
+
+    public Study getStudyToUpdateTag(Account account, String path) {
+        Study study = studyRepository.findStudyWithTagsByPath(path);
+        checkIfExistingStudy(path, study);
+        checkIfManager(account, study);
         return study;
     }
 }
