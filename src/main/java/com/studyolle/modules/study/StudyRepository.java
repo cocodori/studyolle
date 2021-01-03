@@ -4,10 +4,10 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.Entity;
+import java.util.List;
 
 @Transactional(readOnly = true)
-public interface StudyRepository extends JpaRepository<Study, Long> {
+public interface StudyRepository extends JpaRepository<Study, Long>, StudyRepositoryExtension {
     boolean existsByPath(String path);
 
     Study findStudyWithMembersByPath(String path);
