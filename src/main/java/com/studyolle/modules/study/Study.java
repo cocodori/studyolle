@@ -59,6 +59,8 @@ public class Study {
 
     private boolean useBanner; //배너 사용 여부
 
+    private int memberCount;
+
     public void addManager(Account account) {
         this.managers.add(account);
     }
@@ -127,6 +129,7 @@ public class Study {
 
     public void addMember(Account account) {
         this.getMembers().add(account);
+        this.memberCount++;
     }
 
     public String getEncodedPath() {
@@ -135,6 +138,7 @@ public class Study {
 
     public void removeMember(Account account) {
         this.getMembers().remove(account);
+        this.memberCount--;
     }
 
     /*
