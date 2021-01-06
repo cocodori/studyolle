@@ -1,7 +1,9 @@
 package com.studyolle.modules.main;
 
+import com.studyolle.modules.account.AccountRepository;
 import com.studyolle.modules.account.CurrentAccount;
 import com.studyolle.modules.account.Account;
+import com.studyolle.modules.event.EnrollmentRepository;
 import com.studyolle.modules.study.Study;
 import com.studyolle.modules.study.StudyRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,8 @@ import java.util.List;
 @Controller
 public class MainController {
     private final StudyRepository studyRepository;
+    private final AccountRepository accountRepository;
+    private final EnrollmentRepository enrollmentRepository;
 
     /*
     * 인증된 사용자 정보가 anonymouseUser라면, null, 아니라면 account
@@ -26,8 +30,22 @@ public class MainController {
     @GetMapping("/")
     public String home(@CurrentAccount Account account, Model model) {
         if (account != null) {
-            model.addAttribute(account);
+            Account accountLoaded =
+                    accountRepository.findAccountWithTagsAndZonesById(account.getId());
+            model.addAttribute(accountLoaded);
+            model.addAttribute("enrollmentList",
+                    enrollmentRepository.findByAccountAndAcceptedOrderByEnrolledAtDesc(accountLoaded, true));
+            model.addAttribute("studyList",
+                    studyRepository.findByAccount(accountLoaded.getTags(), accountLoaded.getZones()));
+            model.addAttribute("studyManagerOf",
+                    studyRepository.findFirst5ByManagersContainingAndClosedOrderByPublishedDateTimeDesc(account, false));
+            model.addAttribute("studyMemberOf",
+                    studyRepository.findFirst5ByMembersContainingAndClosedOrderByPublishedDateTimeDesc(account, false));
+            return "index-after-login";
         }
+
+
+        model.addAttribute("studyList", studyRepository.findFirst9ByPublishedAndClosedOrderByPublishedDateTimeDesc(true, false));
         return "index";
     }
 

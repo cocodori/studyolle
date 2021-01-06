@@ -14,6 +14,7 @@ public class PackageDependencyTests {
     public static final String ACCOUNT = "..modules.account..";
     public static final String TAG = "..modules.tag..";
     public static final String ZONE = "..modules.zone..";
+    private static final String MAIN = "..modules.main..";
 
     /*
     *   modules패키지는 modules패키지만 참조한다.(infra를 참조하지 않는다.)
@@ -29,15 +30,14 @@ public class PackageDependencyTests {
     @ArchTest
     ArchRule studyPackageRule = classes().that().resideInAPackage(STUDY)
             .should().onlyBeAccessed().byClassesThat()
-            .resideInAnyPackage(STUDY, EVENT);
+            .resideInAnyPackage(STUDY, EVENT, MAIN);
 
     /*
     *   event패키지는 study, event, account패키지에만 의존한다.
     * */
     @ArchTest
     ArchRule eventPackageRule = classes().that().resideInAPackage(EVENT)
-            .should().onlyBeAccessed().byClassesThat()
-            .resideInAnyPackage(STUDY, ACCOUNT, EVENT);
+            .should().accessClassesThat().resideInAnyPackage(STUDY, ACCOUNT, EVENT);
 
     /*
     *   account패키지는 tag, zone, account패키지에만 의존한다.
